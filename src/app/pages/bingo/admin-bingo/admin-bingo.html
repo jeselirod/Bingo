@@ -1,5 +1,6 @@
+<div #fireworksContainer class="fixed top-0 left-0 w-full h-full pointer-events-none z-50"></div>
 <!-- Botón para abrir el modal -->
-<div class="flex justify-start px-4 py-2">
+<div class="flex justify-between px-4 py-2">
   <button (click)="showResetModal.set(true)"
     class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700 transition duration-200">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -7,11 +8,17 @@
     </svg>
     Resetear Bingo
   </button>
+<button
+  (click)="showFireworks()"
+  class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded shadow-lg transition duration-300"
+>
+  Bingo
+</button>
 </div>
 
 <!-- Modal de confirmación -->
 @if (showResetModal()) {
-<div  class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
   <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center">
     <h2 class="text-lg font-bold mb-4 text-gray-800">¿Estás seguro de que quieres resetear el bingo?</h2>
 

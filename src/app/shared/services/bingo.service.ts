@@ -4,7 +4,8 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root'
 })
 export class BingoService {
-  private remainingBallsSignal = signal<number[]>(Array.from({ length: 90 }, (_, i) => i + 1));
+  readonly numbersBingo = 90
+  private remainingBallsSignal = signal<number[]>(Array.from({ length: this.numbersBingo }, (_, i) => i + 1));
   remainingBalls = this.remainingBallsSignal.asReadonly()
 
   private currentBallSignal = signal<number | null>(null);
@@ -22,7 +23,7 @@ export class BingoService {
   private animationIntervalId: any = null;
   private animationDuration = 1000; // Duración total de la animación en ms
   private intervalStep = 50; // Cada 50ms cambia el número durante la animación
-  readonly numbersBingo = 90
+
 
   constructor() { }
 
@@ -41,7 +42,7 @@ export class BingoService {
       return;
     }
 
-     this.isAnimatingSignal.set(true);
+    this.isAnimatingSignal.set(true);
     // Elegimos una bola final random
     const finalIndex = Math.floor(Math.random() * remaining.length);
     const finalBall = remaining[finalIndex];
@@ -56,7 +57,7 @@ export class BingoService {
         this.currentBallSignal.set(finalBall);
         this.remainingBallsSignal.update(bolas => bolas.filter(num => num !== finalBall));
         this.drawnNumberSignal.update(bolas => [...bolas, finalBall]);
-         this.isAnimatingSignal.set(false);
+        this.isAnimatingSignal.set(false);
       } else {
         // Mientras dure la animación, mostraremos un número aleatorio
         const randomIdx = Math.floor(Math.random() * this.remainingBalls().length);
