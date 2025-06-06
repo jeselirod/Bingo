@@ -15,7 +15,7 @@ export class AdminBingo {
   showResetModal = signal(false);
   @ViewChild('fireworksContainer', { static: true }) fireworksContainer!: ElementRef<HTMLDivElement>;
   fireworks: Fireworks | null = null;
-  audio = new Audio('/sounds/Fireworks-burst-sound.mp3');
+  audio = new Audio('/Bingo/sounds/Fireworks-burst-sound.mp3');
   confirmReset() {
     this.bingoService.resetBalls();
     this.showResetModal.set(false);
