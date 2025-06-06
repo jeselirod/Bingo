@@ -1,0 +1,71 @@
+:host {
+  display: block;
+  perspective: 800px;
+}
+
+.sphere-container {
+  width: 128px;
+  height: 128px;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.sphere {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(15deg) rotateY(0deg);
+  transition: transform 0.5s ease-out;
+}
+
+.sphere-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffffff, #e0e0e0 40%, #b0b0b0 70%, #808080);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #4f46e5;
+  box-shadow:
+    inset 4px 4px 12px rgba(0, 0, 0, 0.2),
+    inset -4px -4px 12px rgba(255, 255, 255, 0.6),
+    0 4px 8px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.sphere-face::before {
+  /* Sombra gradual en el borde para resaltar curvatura */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.2) 100%);
+  pointer-events: none;
+}
+
+.number {
+  position: relative;
+  z-index: 1;
+}
+
+/* Opcional: pequeño brillo para simular iluminación */
+.sphere-face::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  width: 30%;
+  height: 30%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.9), transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}

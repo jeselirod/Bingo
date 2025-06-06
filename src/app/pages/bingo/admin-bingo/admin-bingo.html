@@ -1,0 +1,33 @@
+<!-- Botón para abrir el modal -->
+<div class="flex justify-start px-4 py-2">
+  <button (click)="showResetModal.set(true)"
+    class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700 transition duration-200">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v6h6M20 20v-6h-6M4 20l16-16" />
+    </svg>
+    Resetear Bingo
+  </button>
+</div>
+
+<!-- Modal de confirmación -->
+@if (showResetModal()) {
+<div  class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+  <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center">
+    <h2 class="text-lg font-bold mb-4 text-gray-800">¿Estás seguro de que quieres resetear el bingo?</h2>
+
+    <div class="flex justify-center gap-4">
+      <button (click)="confirmReset()" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+        Sí, resetear
+      </button>
+      <button (click)="showResetModal.set(false)"
+        class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Componentes del bingo -->
+<app-bombo></app-bombo>
+<app-tablero></app-tablero>
