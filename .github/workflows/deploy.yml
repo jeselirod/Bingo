@@ -3,11 +3,13 @@ name: Deploy Angular App to GitHub Pages
 on:
   push:
     branches:
-      - master  # O cambia a "master" si es tu rama principal
+      - main  # Cambia a "master" si es tu rama principal
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write    # 👈 Importante: dar permiso de escritura
 
     steps:
       - name: Checkout repo
@@ -29,3 +31,4 @@ jobs:
         with:
           branch: gh-pages
           folder: dist/Bingo
+          token: ${{ secrets.GITHUB_TOKEN }}
