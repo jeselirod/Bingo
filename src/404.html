@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script>
+      // Extrae la parte de la ruta después de "/Bingo"
+      const path = location.pathname.replace(/^\/Bingo/, '');
+      // Redirige a index.html con esa ruta como hash
+      location.replace('/Bingo/index.html#' + path);
+    </script>
+  </head>
+  <body></body>
+</html>
