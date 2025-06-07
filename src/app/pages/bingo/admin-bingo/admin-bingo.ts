@@ -3,19 +3,23 @@ import { Bombo } from "../../../shared/components/bombo/bombo";
 import { Tablero } from "../../../shared/components/tablero/tablero";
 import { BingoService } from '../../../shared/services/bingo.service';
 import { Fireworks } from 'fireworks-js';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin-bingo',
-  imports: [Bombo, Tablero],
+  imports: [Bombo, Tablero, CommonModule],
   templateUrl: './admin-bingo.html',
   styleUrl: './admin-bingo.css'
 })
 export class AdminBingo {
   bingoService = inject(BingoService)
   showResetModal = signal(false);
+  showReviewModal = signal(false);
   @ViewChild('fireworksContainer', { static: true }) fireworksContainer!: ElementRef<HTMLDivElement>;
   fireworks: Fireworks | null = null;
   audio = new Audio('/Bingo/sounds/Fireworks-burst-sound.mp3');
+
+  allNumbers = Array.from({ length: this.bingoService.numbersBingo }, (_, i) => i + 1);
   confirmReset() {
     this.bingoService.resetBalls();
     this.showResetModal.set(false);
@@ -43,6 +47,23 @@ export class AdminBingo {
       this.fireworks?.stop();
       this.audio.pause();
     }, 7000);  // Duración de la animación y el sonido
+  }
+
+   openReview() {
+    this.showReviewModal.set(true);
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen();
+  }
+
+  closeReview() {
+    this.showReviewModal.set(false);
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+  }
+
+  drawnNumber() {
+    return this.bingoService.drawnNumber();
   }
 
 

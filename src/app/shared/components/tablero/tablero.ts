@@ -14,4 +14,8 @@ export class Tablero {
   allNumbers = Array.from({ length: this.bingoService.numbersBingo }, (_, i) => i + 1);
 
   drawnNumber = computed(() => this.bingoService.drawnNumber())
+
+   get cellSize(): string {
+    return 'clamp(2rem, 4vw, 4rem)';
+  }
 }

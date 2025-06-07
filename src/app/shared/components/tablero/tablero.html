@@ -11,7 +11,7 @@
     @for (num of allNumbers; track $index) {
     <div [ngClass]="{
           'bg-green-500 text-white': drawnNumber().includes(num),
-           'bg-red-600 text-white': drawnNumber().includes(num) && drawnNumber()[drawnNumber().length - 1] === num  ,
+           'bg-red-600 text-white animate-pulse': drawnNumber().includes(num) && drawnNumber()[drawnNumber().length - 1] === num  ,
           'bg-gray-200 text-gray-700': !drawnNumber().includes(num)
         }" class="flex items-center justify-center rounded-full transition
                w-8 h-8 text-xs

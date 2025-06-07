@@ -1,6 +1,6 @@
 <div #fireworksContainer class="fixed top-0 left-0 w-full h-full pointer-events-none z-50"></div>
 <!-- Botón para abrir el modal -->
-<div class="flex justify-between px-4 py-2">
+<div class="flex flex-col sm:flex-row justify-start items-stretch sm:items-center px-4 py-2 bg-gray-100 space-y-2 sm:space-y-0 sm:space-x-4">
   <button (click)="showResetModal.set(true)"
     class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow hover:bg-red-700 transition duration-200">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -12,6 +12,20 @@
 
     Resetear Bingo
   </button>
+
+  <button (click)="openReview()"
+    class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700 transition">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+      class="size-6">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+    </svg>
+
+    Repaso de Bolas
+
+
+  </button>
+
   <button (click)="showFireworks()"
     class="flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded shadow-lg transition duration-300">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -45,6 +59,20 @@
     </div>
   </div>
 </div>
+}
+
+@if(showReviewModal()){
+
+<div class="fixed inset-0 bg-gray-900 bg-opacity-90 flex flex-col items-center justify-center z-50 p-4">
+  <button (click)="closeReview()" class="absolute top-4 right-4 text-white text-3xl font-bold">&times;</button>
+  <!-- tu tablero original, ¡sin cambios! -->
+  <app-tablero></app-tablero>
+  <!-- lista de bolas salidas -->
+  <div class="mt-6 text-white text-lg flex flex-wrap justify-center gap-2">
+    <span *ngFor="let n of drawnNumber()" class="px-3 py-1 bg-blue-700 rounded-full">{{ n }}</span>
+  </div>
+</div>
+
 }
 
 <!-- Componentes del bingo -->
