@@ -1,14 +1,30 @@
-import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, signal, viewChild } from '@angular/core';
 import { BingoService } from '../../services/bingo.service';
 import Fireworks from 'fireworks-js';
 import { Tablero } from '../tablero/tablero';
 import { CommonModule } from '@angular/common';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-menu',
-  imports: [Tablero,CommonModule],
+  imports: [Tablero, CommonModule],
   templateUrl: './menu.html',
-  styleUrl: './menu.css'
+  styleUrl: './menu.css',
+  animations: [
+    trigger('slideInOut', [
+      state('closed', style({
+        height: '0',
+        opacity: 0,
+        overflow: 'hidden',
+      })),
+      state('open', style({
+        height: '*',
+        opacity: 1,
+        overflow: 'hidden',
+      })),
+      transition('closed <=> open', animate('300ms ease-in-out')),
+    ]),
+  ],
 })
 export class Menu {
   bingoService = inject(BingoService)
@@ -17,7 +33,23 @@ export class Menu {
   fireworksContainer = viewChild<ElementRef<HTMLDivElement>>('fireworksContainer')
   fireworks: Fireworks | null = null;
   audio = new Audio('/Bingo/sounds/Fireworks-burst-sound.mp3');
-  showMenu = signal(false)
+  isMobile = signal(false);
+  showMenu = signal(true);
+
+  ngOnInit() {
+    this.updateView(window.innerWidth);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: UIEvent) {
+    const w = (event.target as Window).innerWidth;
+    this.updateView(w);
+  }
+
+  private updateView(width: number) {
+    this.isMobile.set(width < 640);      // < sm
+    this.showMenu.set(!this.isMobile())  // en desktop siempre visible
+  }
 
   toggleMenu() {
     this.showMenu.update(value => !value)
