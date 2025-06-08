@@ -85,16 +85,16 @@
 
 @if(showReviewModal()){
 
-<div class="fixed inset-0 bg-gray-900 bg-opacity-90 flex flex-col items-center justify-center z-50 p-4">
-  <button (click)="closeReview()" class="absolute top-4 right-4 text-white text-3xl font-bold">&times;</button>
+<div class="fixed inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center z-50 p-4">
+  <button (click)="closeReview()" class="absolute top-4 right-4 text-black text-3xl font-bold">&times;</button>
   <!-- tu tablero original, ¡sin cambios! -->
   <app-tablero></app-tablero>
   <!-- lista de bolas salidas -->
-  <div class="mt-6 text-white text-lg flex flex-wrap justify-center gap-2">
+  <!-- <div class="mt-6 text-white text-lg flex flex-wrap justify-center gap-2">
     @for (n of drawnNumber(); track $index) {
     <span class="px-3 py-1 bg-blue-700 rounded-full">{{ n }}</span>
     }
-  </div>
+  </div> -->
 </div>
 
 }

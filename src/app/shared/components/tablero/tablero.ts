@@ -10,12 +10,11 @@ import { BingoService } from '../../services/bingo.service';
 })
 export class Tablero {
   bingoService = inject(BingoService)
-  // Genera un array de 1 a 90 para mostrar todas las bolas
-  allNumbers = Array.from({ length: this.bingoService.numbersBingo }, (_, i) => i + 1);
-
+  orden = input<boolean>(false)
   drawnNumber = computed(() => this.bingoService.drawnNumber())
+  allNumbers = Array.from({ length: this.bingoService.numbersBingo }, (_, i) => i + 1)
 
-   get cellSize(): string {
+  get cellSize(): string {
     return 'clamp(2rem, 4vw, 4rem)';
   }
 }

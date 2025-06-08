@@ -8,19 +8,17 @@ import { Menu } from '../../../shared/components/menu/menu';
 
 @Component({
   selector: 'app-admin-bingo',
-  imports: [Menu,Bombo, Tablero, CommonModule],
+  imports: [Menu, Bombo, Tablero, CommonModule],
   templateUrl: './admin-bingo.html',
   styleUrl: './admin-bingo.css'
 })
 export class AdminBingo {
-  bingoService = inject(BingoService)
-  showResetModal = signal(false);
-  showReviewModal = signal(false);
-  @ViewChild('fireworksContainer', { static: true }) fireworksContainer!: ElementRef<HTMLDivElement>;
-  fireworks: Fireworks | null = null;
-  audio = new Audio('/Bingo/sounds/Fireworks-burst-sound.mp3');
 
+  selectedTab: 'tablero' | 'orden' = 'tablero';
 
+  selectTab(tab: 'tablero' | 'orden') {
+    this.selectedTab = tab;
+  }
 
 
 

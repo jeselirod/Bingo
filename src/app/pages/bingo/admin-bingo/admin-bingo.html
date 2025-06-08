@@ -1,4 +1,32 @@
-
-<app-menu></app-menu><!-- Componentes del bingo -->
+<app-menu></app-menu>
 <app-bombo></app-bombo>
-<app-tablero></app-tablero>
+<section class=" max-w-[1280px] mx-auto mt-3   ">
+  <!-- Nav de pestañas -->
+  <nav class="flex border-b border-gray-200 ">
+    <button (click)="selectTab('tablero')" [ngClass]="{
+        'border-blue-500 text-blue-600': selectedTab === 'tablero',
+        'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300': selectedTab !== 'tablero'
+      }" class="px-4  -mb-px border-b-2 font-medium transition-colors duration-200">
+      Tablero
+    </button>
+    <button (click)="selectTab('orden')" [ngClass]="{
+        'border-blue-500 text-blue-600': selectedTab === 'orden',
+        'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300': selectedTab !== 'orden'
+      }" class="ml-4 px-4  -mb-px border-b-2 font-medium transition-colors duration-200">
+      Orden de bolas extraídas
+    </button>
+  </nav>
+
+  <!-- Contenido de pestañas -->
+  <div>
+    <!-- Pestaña Tablero -->
+    @if (selectedTab === 'tablero') {
+    <app-tablero></app-tablero>
+    }
+
+    <!-- Pestaña Orden de bolas extraídas -->
+    @if (selectedTab === 'orden') {
+    <app-tablero [orden]="true"></app-tablero>
+    }
+  </div>
+</section>
