@@ -21,10 +21,17 @@
 
     <!-- Crear partida -->
     @if (activeTab === 'create') {
-    <form *ngIf="activeTab === 'create'" (ngSubmit)="createRoom()" class="space-y-4">
-      <input [(ngModel)]="roomId" name="createRoomId" type="text" placeholder="ID de la partida"
+    <form [formGroup]="form" (ngSubmit)="createRoom()" class="space-y-4">
+      <input formControlName="roomId" name="createRoomId" type="text" placeholder="ID de la partida"
         class="w-full px-4 py-2 rounded-lg outline-2 text-purple-800 font-semibold  focus:ring-2 focus:ring-black"
         required />
+      @if (formUtils.isValidField(form, 'roomId')) {
+      <div class="text-red-400 text-sm mt-0">
+        <div>
+          {{ formUtils.getFieldError(form, "roomId") }}
+        </div>
+      </div>
+      }
       <button type="submit"
         class="w-full px-4 py-2 bg-purple-500 text-white font-bold rounded-full hover:bg-purple-300 transition">
         Crear Partida
@@ -32,10 +39,17 @@
     </form>
     }@else if (activeTab === 'join') {
     <!-- Unirse como invitado -->
-    <form (ngSubmit)="joinRoom()" class="space-y-4">
-      <input [(ngModel)]="roomId" name="joinRoomId" type="text" placeholder="ID de la partida"
+    <form [formGroup]="form" (ngSubmit)="joinRoom()" class="space-y-4">
+      <input formControlName="roomId" name="joinRoomId" type="text" placeholder="ID de la partida"
         class="w-full px-4 py-2 rounded-lg outline-2 text-purple-800 font-semibold  focus:ring-2 focus:ring-black"
         required />
+      @if (formUtils.isValidField(form, 'roomId')) {
+      <div class="text-red-400 text-sm mt-0">
+        <div>
+          {{ formUtils.getFieldError(form, "roomId") }}
+        </div>
+      </div>
+      }
       <button type="submit"
         class="w-full px-4 py-2 bg-purple-500 text-white font-bold rounded-full hover:bg-purple-300 transition">
         Entrar a Partida
