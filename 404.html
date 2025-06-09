@@ -3,15 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <script>
-      // 1) Obtenemos la ruta completa que el usuario estaba intentando abrir.
-      //    Ejem: si el navegador cargó "/Bingo/admin-bingo", location.pathname === "/Bingo/admin-bingo".
-      const fullPath = window.location.pathname;
-      // 2) Quitamos el prefijo "/Bingo" para dejar solo la parte interna, ej: "/admin-bingo"
+      const fullPath = window.location.pathname + window.location.search;
       const internal = fullPath.replace(/^\/Bingo/, '');
-      // 3) Redirigimos a index.html con "#/ruta-interna"
-      //    De esta forma Angular arrancará y verá "#/admin-bingo", mostrando el componente correcto.
-      window.location.replace('/Bingo/index.html#' + internal);
+      const newUrl = '/Bingo/index.html#' + internal.replace(/^\/+/, '');
+      window.location.replace(newUrl);
     </script>
   </head>
   <body></body>
-</html>
+</html
