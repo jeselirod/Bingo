@@ -1,0 +1,46 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-500 text-white">
+  <div class="bg-white bg-opacity-10 backdrop-blur-md p-8 rounded-2xl shadow-lg w-full max-w-md">
+    <div class="text-center mb-6">
+      <h2 class="text-3xl text-black font-bold">Crea una partida o únete como invitado</h2>
+    </div>
+
+    <div class="flex justify-center mb-4 space-x-2">
+      <button (click)="activeTab = 'create'" [ngClass]="{
+          'bg-purple-500 text-white': activeTab === 'create',
+          'bg-white text-purple-600': activeTab !== 'create'
+        }" class="px-4 py-2 rounded-full transition font-semibold w-1/2">
+        Crear Partida
+      </button>
+      <button (click)="activeTab = 'join'" [ngClass]="{
+          'bg-purple-500 text-white': activeTab === 'join',
+          'bg-white text-purple-600': activeTab !== 'join'
+        }" class="px-4 py-2 rounded-full transition font-semibold w-1/2">
+        Invitado
+      </button>
+    </div>
+
+    <!-- Crear partida -->
+    @if (activeTab === 'create') {
+    <form *ngIf="activeTab === 'create'" (ngSubmit)="createRoom()" class="space-y-4">
+      <input [(ngModel)]="roomId" name="createRoomId" type="text" placeholder="ID de la partida"
+        class="w-full px-4 py-2 rounded-lg outline-2 text-purple-800 font-semibold  focus:ring-2 focus:ring-black"
+        required />
+      <button type="submit"
+        class="w-full px-4 py-2 bg-purple-500 text-white font-bold rounded-full hover:bg-purple-300 transition">
+        Crear Partida
+      </button>
+    </form>
+    }@else if (activeTab === 'join') {
+    <!-- Unirse como invitado -->
+    <form (ngSubmit)="joinRoom()" class="space-y-4">
+      <input [(ngModel)]="roomId" name="joinRoomId" type="text" placeholder="ID de la partida"
+        class="w-full px-4 py-2 rounded-lg outline-2 text-purple-800 font-semibold  focus:ring-2 focus:ring-black"
+        required />
+      <button type="submit"
+        class="w-full px-4 py-2 bg-purple-500 text-white font-bold rounded-full hover:bg-purple-300 transition">
+        Entrar a Partida
+      </button>
+    </form>
+    }
+  </div>
+</div>

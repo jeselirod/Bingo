@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { Bola } from '../bola/bola';
 import { BingoService } from '../../services/bingo.service';
 
@@ -10,7 +10,7 @@ import { BingoService } from '../../services/bingo.service';
 })
 export class Bombo {
   bingoService = inject(BingoService)
-
+  isAdmin = input<boolean>(false)
   // Computed para contar cuántas bolas quedan
   remainingCount = computed(() => this.bingoService.remainingBalls().length);
 
@@ -19,7 +19,6 @@ export class Bombo {
   }
 
   ngOnInit() {
-    this.bingoService.resetBalls();
   }
 
 

@@ -3,12 +3,25 @@ import { provideRouter, withViewTransitions, withHashLocation } from '@angular/r
 import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
+import { environment } from '../environments/environment';
+import { initializeApp } from "firebase/app";
+import { provideFirebaseApp } from '@angular/fire/app';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withViewTransitions(), withHashLocation()),
-    provideAnimations()
+    provideAnimations(),
+    //Para utilizar Firebase
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(()=> getFirestore()),
+    provideAnalytics(()=> getAnalytics()),
+    ScreenTrackingService,
+    UserTrackingService,
   ]
 };
+
+

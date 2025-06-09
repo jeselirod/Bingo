@@ -1,14 +1,14 @@
 <div
-  class="relative overflow-hidden  flex flex-col items-center justify-center space-y-6 p-6 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 rounded-lg shadow-lg max-w-xs mx-auto">
+  class="relative overflow-hidden  flex flex-col items-center justify-center space-y-6 p-6 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 rounded-lg shadow-lg max-w-xs mx-auto mt-1">
   <!-- Círculo con la bola animada o actual -->
 
-  <app-bola [number]="bingoService.displayBall()"></app-bola>
+  <app-bola [number]="bingoService.currentBall()"></app-bola>
 
 
   <!-- Botón para sacar siguiente bola -->
   <button (click)=" bingoService.nextBall()"
     class="px-6 py-3 bg-indigo-700 text-white rounded-lg hover:bg-indigo-800 transition disabled:opacity-50"
-    [disabled]="remainingCount() === 0">
+    [disabled]="remainingCount() === 0 || !isAdmin()">
     Siguiente bola
   </button>
 

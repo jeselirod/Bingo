@@ -100,8 +100,4 @@ export class Menu {
       document.exitFullscreen();
     }
   }
-
-  drawnNumber() {
-    return this.bingoService.drawnNumber();
-  }
 }

@@ -1,4 +1,4 @@
-@if (!orden() || (orden() && drawnNumber().length>0)) {
+@if (!orden() || (orden() && drawnNumbers().length>0)) {
 <div class="tablero-container w-full max-w-screen-xl mx-auto mt-1 px-4 flex justify-center">
   <div class="grid
            grid-cols-8
@@ -9,11 +9,11 @@
            gap-2 sm:gap-3 md:gap-4
            bg-gray-800 p-4 rounded-lg shadow-inner w-full max-w-7xl">
 
-    @for (num of orden() ? drawnNumber() : allNumbers; track $index) {
+    @for (num of orden() ? drawnNumbers() : allNumbers; track $index) {
     <div [ngClass]="{
-          'bg-green-500 text-white': drawnNumber().includes(num),
-           'bg-red-600 text-white animate-pulse': drawnNumber().includes(num) && drawnNumber()[drawnNumber().length - 1] === num  ,
-          'bg-gray-200 text-gray-700': !drawnNumber().includes(num)
+          'bg-green-500 text-white': drawnNumbers().includes(num),
+           'bg-red-600 text-white animate-pulse': drawnNumbers().includes(num) && drawnNumbers()[drawnNumbers().length - 1] === num  ,
+          'bg-gray-200 text-gray-700': !drawnNumbers().includes(num)
         }" class="flex items-center justify-center rounded-full transition
                w-7 h-7 text-xs
                sm:w-7 sm:h-7 sm:text-sm

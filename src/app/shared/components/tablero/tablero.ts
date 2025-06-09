@@ -11,7 +11,7 @@ import { BingoService } from '../../services/bingo.service';
 export class Tablero {
   bingoService = inject(BingoService)
   orden = input<boolean>(false)
-  drawnNumber = computed(() => this.bingoService.drawnNumber())
+  drawnNumbers = computed(() => this.bingoService.drawnNumbers())
   allNumbers = Array.from({ length: this.bingoService.numbersBingo }, (_, i) => i + 1)
 
   get cellSize(): string {
