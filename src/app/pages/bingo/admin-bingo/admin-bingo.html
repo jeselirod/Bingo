@@ -1,32 +1,38 @@
 <app-menu></app-menu>
 <app-bombo></app-bombo>
-<section class=" max-w-[1280px] mx-auto mt-3   ">
-  <!-- Nav de pestañas -->
-  <nav class="flex border-b border-gray-200 ">
-    <button (click)="selectTab('tablero')" [ngClass]="{
-        'border-blue-500 text-blue-600': selectedTab === 'tablero',
-        'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300': selectedTab !== 'tablero'
-      }" class="px-4  -mb-px border-b-2 font-medium transition-colors duration-200">
+<section class="max-w-[1280px] mx-auto mt-2">
+  <!-- Nav de pestañas estilo "pill" -->
+  <nav class="flex justify-start overflow-x-auto mx-4 bg-gray-100 p-1 rounded-full">
+    <button
+      (click)="selectTab('tablero')"
+      [ngClass]="{
+        'bg-white text-blue-600 shadow-md': selectedTab === 'tablero',
+        'text-gray-600 hover:text-blue-600': selectedTab !== 'tablero'
+      }"
+      class="flex-shrink-0 px-5 py-2 rounded-full font-medium transition-colors duration-200 whitespace-nowrap">
       Tablero
     </button>
-    <button (click)="selectTab('orden')" [ngClass]="{
-        'border-blue-500 text-blue-600': selectedTab === 'orden',
-        'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300': selectedTab !== 'orden'
-      }" class="ml-4 px-4  -mb-px border-b-2 font-medium transition-colors duration-200">
-      Orden de bolas extraídas
+    <button
+      (click)="selectTab('orden')"
+      [ngClass]="{
+        'bg-white text-blue-600 shadow-md': selectedTab === 'orden',
+        'text-gray-600 hover:text-blue-600': selectedTab !== 'orden'
+      }"
+      class="flex-shrink-0 ml-2 px-5 py-2 rounded-full font-medium transition-colors duration-200 whitespace-nowrap">
+      Bolas extraídas
     </button>
   </nav>
 
-  <!-- Contenido de pestañas -->
-  <div>
+  <!-- Contenido de pestañas con @if de Angular 20 -->
+  <div class="">
     <!-- Pestaña Tablero -->
     @if (selectedTab === 'tablero') {
-    <app-tablero></app-tablero>
+      <app-tablero></app-tablero>
     }
 
     <!-- Pestaña Orden de bolas extraídas -->
     @if (selectedTab === 'orden') {
-    <app-tablero [orden]="true"></app-tablero>
+      <app-tablero [orden]="true"></app-tablero>
     }
   </div>
 </section>
