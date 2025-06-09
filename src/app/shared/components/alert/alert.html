@@ -1,0 +1,16 @@
+<div class="fixed top-4 right-4 space-y-2 z-50">
+  @for (alert of alerts$ | async; track trackById(i,alert); let i = $index) {
+  <div
+    class="min-w-[200px] max-w-xs p-4 rounded-lg shadow-lg border-l-4 flex items-start space-x-3 transition-transform transform"
+    [ngClass]="{
+        'bg-green-400 border-green-600': alert.type === 'success',
+        'bg-red-600 border-red-700': alert.type === 'error',
+        'bg-blue-400 border-blue-600': alert.type === 'info',
+        'bg-yellow-400 border-yellow-600': alert.type === 'warning'
+      }">
+    <div class="flex-1 text-sm font-medium text-gray-800">
+      {{ alert.message }}
+    </div>
+  </div>
+  }
+</div>

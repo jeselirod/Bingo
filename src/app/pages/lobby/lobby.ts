@@ -16,7 +16,6 @@ export class Lobby {
   bingoService = inject(BingoService)
   router = inject(Router)
   activeTab: 'create' | 'join' = 'create';
-  roomId: string = '';
 
   form: FormGroup = new FormGroup({
     roomId: new FormControl('', [Validators.required, Validators.maxLength(50), Validators.pattern(this.formUtils.idRoomPattern)])
@@ -27,6 +26,7 @@ export class Lobby {
     this.checkForm()
     const roomId = this.form.get('roomId')?.value.trim();
     if (!roomId) return;
+    this.bingoService.createRoom(roomId);
     this.router.navigate([`/admin-bingo/${roomId}`]); // Ajusta la ruta según tu estructura
   }
 
@@ -34,7 +34,11 @@ export class Lobby {
     this.checkForm()
     const roomId = this.form.get('roomId')?.value.trim();
     if (!roomId) return;
-    this.router.navigate([`/invitado-bingo/${roomId}`]); // Ajusta la ruta según tu estructura
+    this.bingoService.joinRoom(roomId).then(r => {
+      if (r) this.router.navigate([`/invitado-bingo/${roomId}`]);
+
+
+    })
   }
 
   checkForm() {

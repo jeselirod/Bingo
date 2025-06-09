@@ -9,6 +9,7 @@ import {
   arrayRemove,
   arrayUnion,
   getDoc,
+  DocumentReference,
 } from '@angular/fire/firestore';
 import { Observable, Subscription } from 'rxjs';
 
@@ -24,6 +25,7 @@ import {
   QueryDocumentSnapshot,
   DocumentData
 } from '@angular/fire/firestore';
+import { AlertService } from './alert.service';
 
 const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
   toFirestore(room: BingoRoom): DocumentData {
@@ -62,6 +64,7 @@ export class BingoService {
   isAnimating = signal(false);
 
   firestore = inject(Firestore)
+  alertService = inject(AlertService)
 
   constructor() {
     effect(() => {
@@ -74,10 +77,8 @@ export class BingoService {
     this.roomId = roomId;
 
     const roomRef = doc(this.firestore, 'rooms', roomId);
-    const existingRoom = await getDoc(roomRef);
-
     // Si ya existe, no la creamos de nuevo
-    if (existingRoom.exists()) {
+    if (await this.existRoom(roomRef)) {
       console.log(`La sala ${roomId} ya existe.`);
       this.listenRoom(); // Podemos escucharla igualmente
       return;
@@ -94,9 +95,20 @@ export class BingoService {
   }
 
   // Unirse a sala existente (admin o invitado)
-  joinRoom(roomId: string) {
+  async joinRoom(roomId: string): Promise<boolean> {
     this.roomId = roomId;
+
+    // Referencia al documento con converter
+    const roomDocRef = doc(this.firestore, 'rooms', this.roomId)
+
+    // Comprobamos existencia
+    if (!await this.existRoom(roomDocRef)) {
+      this.alertService.show(`La sala con id ${this.roomId} no existe`, 'error', 4000);
+      return false;
+    }
+
     this.listenRoom();
+    return true
   }
 
   // Escucha real-time de Firestore
@@ -172,5 +184,11 @@ export class BingoService {
         this.currentBall.set(this.remainingBalls()[randomIdx]);
       }
     }, this.intervalStep);
+  }
+
+  async existRoom(roomRef: DocumentReference<DocumentData, DocumentData>) {
+    const existingRoom = await getDoc(roomRef);
+    return existingRoom.exists()
+    // Si ya existe, no la creamos de nuevo
   }
 }

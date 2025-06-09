@@ -24,15 +24,9 @@ export class AdminBingo {
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.roomId = params.get('id');
-
       const fullUrl = this.router.url; // e.g. /admin-bingo/prueba
       this.isAdmin = fullUrl.includes('/admin-bingo/');
 
-      if (this.roomId && this.isAdmin) {
-        this.bingoService.createRoom(this.roomId);
-      } else if (this.roomId) {
-        this.bingoService.joinRoom(this.roomId);
-      }
     });
   }
 
