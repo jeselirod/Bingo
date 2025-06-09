@@ -5,7 +5,7 @@
     <script>
       // 1) Obtenemos la ruta completa que el usuario estaba intentando abrir.
       //    Ejem: si el navegador cargó "/Bingo/admin-bingo", location.pathname === "/Bingo/admin-bingo".
-      const fullPath = window.location.pathname + window.location.search;
+      const fullPath = window.location.pathname
       // 2) Quitamos el prefijo "/Bingo" para dejar solo la parte interna, ej: "/admin-bingo"
       const internal = fullPath.replace(/^\/Bingo/, '');
       // 3) Redirigimos a index.html con "#/ruta-interna"
