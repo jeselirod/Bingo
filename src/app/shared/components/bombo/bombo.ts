@@ -11,6 +11,7 @@ import { BingoService } from '../../services/bingo.service';
 export class Bombo {
   bingoService = inject(BingoService)
   isAdmin = input<boolean>(false)
+  idRoom = input<string | null>('cumpleJCuadrado')
   // Computed para contar cuántas bolas quedan
   remainingCount = computed(() => this.bingoService.remainingBalls().length);
 
