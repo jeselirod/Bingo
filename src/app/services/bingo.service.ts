@@ -25,7 +25,7 @@ import {
   QueryDocumentSnapshot,
   DocumentData
 } from '@angular/fire/firestore';
-import { AlertService } from './alert.service';
+import { AlertService } from '../shared/services/alert.service';
 
 const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
   toFirestore(room: BingoRoom): DocumentData {

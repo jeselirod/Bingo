@@ -1,5 +1,19 @@
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-500 text-white">
-  <div class="bg-white bg-opacity-10 backdrop-blur-md p-8 rounded-2xl shadow-lg w-full max-w-md">
+  <div class="bg-white bg-opacity-10 backdrop-blur-md p-10 rounded-2xl shadow-lg w-full max-w-md relative">
+
+    <!-- Botón de Cerrar Sesión -->
+    <button (click)="logout()"
+      class="absolute flex items-center top-2 right-2 text-sm bg-purple-600 text-white font-semibold px-3 py-1 rounded-full shadow hover:bg-purple-300 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+      </svg>
+
+      Cerrar sesión
+
+    </button>
+
     <div class="text-center mb-6">
       <h2 class="text-3xl text-black font-bold">Crea una partida o únete como invitado</h2>
     </div>

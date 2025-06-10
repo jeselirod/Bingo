@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { Bola } from '../bola/bola';
-import { BingoService } from '../../services/bingo.service';
+import { BingoService } from '../../../services/bingo.service';
 
 @Component({
   selector: 'app-bombo',

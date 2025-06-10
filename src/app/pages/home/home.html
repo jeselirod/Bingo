@@ -1,9 +1,22 @@
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-500 text-white">
   <div class="text-center space-y-4">
+
+
+
+    @if(authService.user$ | async){
+
     <h1 class="text-4xl font-bold">¡Cumple J²!</h1>
     <p class="text-lg">Bienvenidos al Bingo del Cumple J² 🎉</p>
-    <button [routerLink]="['/lobby']" class="mt-4 px-6 py-2 bg-white text-purple-600 font-semibold rounded-full hover:bg-gray-100 transition">
+    <button [routerLink]="['/lobby']"
+      class="mt-4 px-6 py-2 bg-white text-purple-600 font-semibold rounded-full hover:bg-gray-100 transition">
       Empezar
     </button>
+
+    }@else {
+    <div class="bg-white bg-opacity-10 backdrop-blur-md p-10 rounded-2xl shadow-lg w-full max-w-md relative">
+      <app-login></app-login>
+    </div>
+
+    }
   </div>
 </div>

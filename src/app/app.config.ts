@@ -8,6 +8,7 @@ import { initializeApp } from "firebase/app";
 import { provideFirebaseApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
+import { getAuth, provideAuth } from '@angular/fire/auth';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,8 +18,9 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     //Para utilizar Firebase
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(()=> getFirestore()),
-    provideAnalytics(()=> getAnalytics()),
+    provideFirestore(() => getFirestore()),
+    provideAnalytics(() => getAnalytics()),
+    provideAuth(() => getAuth()),
     ScreenTrackingService,
     UserTrackingService,
   ]

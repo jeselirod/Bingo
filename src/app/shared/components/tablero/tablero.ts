@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
-import { BingoService } from '../../services/bingo.service';
+import { BingoService } from '../../../services/bingo.service';
 
 @Component({
   selector: 'app-tablero',
