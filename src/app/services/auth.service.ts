@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Auth, authState, createUserWithEmailAndPassword, GoogleAuthProvider, signInAnonymously, signInWithEmailAndPassword, signInWithPopup, signOut, User } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
+import { SpinnerService } from '../shared/services/spinner-service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,15 +9,17 @@ import { Observable } from 'rxjs';
 export class AuthService {
   private auth: Auth = inject(Auth);
   user$: Observable<User | null> = authState(this.auth);
+  spinnerService = inject(SpinnerService)
   constructor() {
-    // Suscribirte aquí para hacer algo al inicio
-    // this.user$.subscribe(user => {
-    //   if (user) {
-    //     console.log('Usuario logueado:', user.displayName);
-    //   } else {
-    //     console.log('Ningún usuario logueado');
-    //   }
-    // });
+  this.spinnerService.show()
+    this.user$.subscribe(user => {
+      this.spinnerService.hide()
+      if (user) {
+        console.log('Usuario logueado:', user.displayName);
+      } else {
+        console.log('Ningún usuario logueado');
+      }
+    });
   }
 
   async loginWithGoogle(): Promise<void> {
@@ -49,7 +52,7 @@ export class AuthService {
     }
   }
 
-    async signInWithEmailAndPassword(email: string, password: string): Promise<User | null> {
+  async signInWithEmailAndPassword(email: string, password: string): Promise<User | null> {
     try {
       // signInWithEmailAndPassword también devuelve un UserCredential
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);

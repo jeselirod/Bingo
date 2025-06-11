@@ -51,8 +51,8 @@ const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
 @Injectable({ providedIn: 'root' })
 export class BingoService {
   readonly numbersBingo = 90
-  private animationDuration = 1000; // Duración total de la animación en ms
-  private intervalStep = 50;
+  readonly animationDuration = 1000; // Duración total de la animación en ms
+  readonly intervalStep = 50;
   private animationIntervalId: any = null;
   private roomId: string | null = null;
   private roomSub: Subscription | null = null;

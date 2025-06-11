@@ -1,0 +1,9 @@
+@if (isLoading$ | async) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div class="w-24 h-24 flex items-center justify-center">
+      <div class="w-full h-full animate-soft-bounce">
+        <app-bola [number]="number()" />
+      </div>
+    </div>
+  </div>
+}

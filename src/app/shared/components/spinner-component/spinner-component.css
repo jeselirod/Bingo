@@ -1,0 +1,15 @@
+
+@layer utilities {
+  .animate-soft-bounce {
+    animation: soft-bounce 0.8s ease-in-out infinite;
+  }
+
+  @keyframes soft-bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10%);
+    }
+  }
+}
