@@ -3,7 +3,11 @@ import { Routes } from '@angular/router';
 export const routesBingo: Routes = [
 
   {
-    path: '',
-    loadComponent: () => import('./admin-bingo/admin-bingo').then(m => m.AdminBingo)
+    path: 'admin/:id',
+    loadComponent: () => import('./bingo/bingo').then(m => m.BingoComponent)
+  },
+  {
+    path: 'invitado/:id',
+    loadComponent: () => import('./bingo/bingo').then(m => m.BingoComponent)
   }
 ];

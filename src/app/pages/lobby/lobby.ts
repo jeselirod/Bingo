@@ -32,7 +32,7 @@ export class Lobby {
     const roomId = this.form.get('roomId')?.value.trim();
     if (!roomId) return;
     this.bingoService.createRoom(roomId);
-    this.router.navigate([`/admin-bingo/${roomId}`]); // Ajusta la ruta según tu estructura
+    this.router.navigate([`/bingo/admin/${roomId}`]); // Ajusta la ruta según tu estructura
   }
 
   joinRoom() {
@@ -40,7 +40,7 @@ export class Lobby {
     const roomId = this.form.get('roomId')?.value.trim();
     if (!roomId) return;
     this.bingoService.joinRoom(roomId).then(r => {
-      if (r) this.router.navigate([`/invitado-bingo/${roomId}`]);
+      if (r) this.router.navigate([`/bingo/invitado/${roomId}`]);
 
 
     })

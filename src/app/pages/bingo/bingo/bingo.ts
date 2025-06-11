@@ -10,10 +10,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-admin-bingo',
   imports: [Menu, Bombo, Tablero, CommonModule],
-  templateUrl: './admin-bingo.html',
-  styleUrl: './admin-bingo.css'
+  templateUrl: './bingo.html',
+  styleUrl: './bingo.css'
 })
-export class AdminBingo {
+export class BingoComponent {
 
   selectedTab: 'tablero' | 'orden' = 'tablero';
   route = inject(ActivatedRoute)
@@ -25,7 +25,7 @@ export class AdminBingo {
     this.route.paramMap.subscribe(params => {
       this.roomId = params.get('id');
       const fullUrl = this.router.url; // e.g. /admin-bingo/prueba
-      this.isAdmin = fullUrl.includes('/admin-bingo/');
+      this.isAdmin = fullUrl.includes('/admin/');
 
     });
   }
