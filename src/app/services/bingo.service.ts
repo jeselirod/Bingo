@@ -30,6 +30,7 @@ import {
 import { AlertService } from '../shared/services/alert.service';
 import { User } from 'firebase/auth';
 import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
 
 const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
   toFirestore(room: BingoRoom): DocumentData {
@@ -74,6 +75,7 @@ export class BingoService {
   firestore = inject(Firestore)
   alertService = inject(AlertService)
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   constructor() {
     effect(() => {
@@ -112,6 +114,7 @@ export class BingoService {
 
     // Comprobamos existencia
     if (!await this.existRoom(roomDocRef)) {
+      this.router.navigate(['/lobby'])
       this.alertService.show(`La sala con id ${this.roomId} no existe`, 'error', 4000);
       return false;
     }
@@ -230,12 +233,12 @@ export class BingoService {
   }
 
   async removePlayerFromRoom(uid: string): Promise<void> {
-  if (!this.roomId) return;
+    if (!this.roomId) return;
 
-  const roomRef = doc(this.firestore, 'rooms', this.roomId);
-  // Marca el campo players.{uid} para borrado
-  await updateDoc(roomRef, {
-    [`players.${uid}`]: deleteField()
-  });
-}
+    const roomRef = doc(this.firestore, 'rooms', this.roomId);
+    // Marca el campo players.{uid} para borrado
+    await updateDoc(roomRef, {
+      [`players.${uid}`]: deleteField()
+    });
+  }
 }

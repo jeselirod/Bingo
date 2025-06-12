@@ -29,8 +29,18 @@ export class BingoComponent {
       this.roomId = params.get('id');
       const fullUrl = this.router.url; // e.g. /admin-bingo/prueba
       this.isAdmin = fullUrl.includes('/admin/');
+      if (!this.roomId) {
+        this.router.navigate(['/lobby']);
+        return;
+      }
+      if (this.isAdmin) {
+        this.bingoService.createRoom(this.roomId!);
+      } else if (!this.isAdmin) {
+        this.bingoService.joinRoom(this.roomId!)
 
-    });
+
+      }
+    })
   }
 
   selectTab(tab: 'tablero' | 'orden' | 'players') {

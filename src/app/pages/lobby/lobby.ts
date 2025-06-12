@@ -39,11 +39,10 @@ export class Lobby {
     this.checkForm()
     const roomId = this.form.get('roomId')?.value.trim();
     if (!roomId) return;
-    this.bingoService.joinRoom(roomId).then(r => {
-      if (r) this.router.navigate([`/bingo/invitado/${roomId}`]);
+    this.router.navigate([`/bingo/invitado/${roomId}`]);
 
 
-    })
+
   }
 
   checkForm() {
