@@ -6,19 +6,22 @@ import { Fireworks } from 'fireworks-js';
 import { CommonModule } from '@angular/common';
 import { Menu } from '../../../shared/components/menu/menu';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Players } from '../../../shared/components/players/players';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-admin-bingo',
-  imports: [Menu, Bombo, Tablero, CommonModule],
+  imports: [CommonModule, Menu, Bombo, Tablero, Players],
   templateUrl: './bingo.html',
   styleUrl: './bingo.css'
 })
 export class BingoComponent {
 
-  selectedTab: 'tablero' | 'orden' = 'tablero';
+  selectedTab: 'tablero' | 'orden' | 'players' = 'tablero';
   route = inject(ActivatedRoute)
   router = inject(Router)
   bingoService = inject(BingoService)
+  authService = inject(AuthService)
   isAdmin = false
   roomId!: string | null
   ngOnInit() {
@@ -30,8 +33,15 @@ export class BingoComponent {
     });
   }
 
-  selectTab(tab: 'tablero' | 'orden') {
+  selectTab(tab: 'tablero' | 'orden' | 'players') {
     this.selectedTab = tab;
+  }
+
+  ngOnDestroy(): void {
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.bingoService.removePlayerFromRoom(user.uid);
+    }
   }
 
 

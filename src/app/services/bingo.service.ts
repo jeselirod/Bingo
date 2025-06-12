@@ -10,6 +10,7 @@ import {
   arrayUnion,
   getDoc,
   DocumentReference,
+  deleteField,
 } from '@angular/fire/firestore';
 import { Observable, Subscription } from 'rxjs';
 
@@ -18,6 +19,7 @@ export interface BingoRoom {
   drawnNumbers: number[];
   currentBall: number | null;
   isAnimating: boolean;
+  players?: Record<string, string>;
 }
 
 import {
@@ -26,6 +28,8 @@ import {
   DocumentData
 } from '@angular/fire/firestore';
 import { AlertService } from '../shared/services/alert.service';
+import { User } from 'firebase/auth';
+import { AuthService } from './auth.service';
 
 const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
   toFirestore(room: BingoRoom): DocumentData {
@@ -35,6 +39,8 @@ const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
       drawnNumbers: room.drawnNumbers,
       currentBall: room.currentBall,
       isAnimating: room.isAnimating,
+      // Si no viene, lo omitimos
+      ...(room.players != null && { players: room.players })
     };
   },
   fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): BingoRoom {
@@ -44,6 +50,7 @@ const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
       drawnNumbers: data['drawnNumbers'] as number[],
       currentBall: data['currentBall'] as number | null,
       isAnimating: data['isAnimating'] as boolean,
+      players: (data['players'] as Record<string, string>) || {},
     };
   }
 };
@@ -62,9 +69,11 @@ export class BingoService {
   drawnNumbers = signal<number[]>([]);
   currentBall = signal<number | null>(null);
   isAnimating = signal(false);
+  players = signal<Record<string, string>>({});
 
   firestore = inject(Firestore)
   alertService = inject(AlertService)
+  private authService = inject(AuthService);
 
   constructor() {
     effect(() => {
@@ -108,6 +117,14 @@ export class BingoService {
     }
 
     this.listenRoom();
+
+    // … después de this.listenRoom();
+    // inyectamos y registramos al usuario en la sala
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      await this.addPlayerToRoom(currentUser);
+    }
+
     return true
   }
 
@@ -125,7 +142,11 @@ export class BingoService {
         this.drawnNumbers.set(data.drawnNumbers);
         this.currentBall.set(data.currentBall);
         this.isAnimating.set(data.isAnimating);
+        if (data.players) {
+          this.players.set(data.players);
+        }
       }
+
 
     });
   }
@@ -191,4 +212,30 @@ export class BingoService {
     return existingRoom.exists()
     // Si ya existe, no la creamos de nuevo
   }
+  /**
+   * Añade el usuario autenticado a la lista de players de la sala
+   */
+  async addPlayerToRoom(user: User): Promise<void> {
+    if (!this.roomId) return;
+
+    const name = user.displayName
+      || user.email
+      || 'Anónimo';
+
+    // Actualiza el campo "players.{uid}" en el doc de la sala
+    const roomRef = doc(this.firestore, 'rooms', this.roomId);
+    await updateDoc(roomRef, {
+      [`players.${user.uid}`]: name
+    });
+  }
+
+  async removePlayerFromRoom(uid: string): Promise<void> {
+  if (!this.roomId) return;
+
+  const roomRef = doc(this.firestore, 'rooms', this.roomId);
+  // Marca el campo players.{uid} para borrado
+  await updateDoc(roomRef, {
+    [`players.${uid}`]: deleteField()
+  });
+}
 }

@@ -18,6 +18,14 @@
       class="flex-shrink-0 ml-2 px-5 py-2 rounded-full font-medium transition-colors duration-200 whitespace-nowrap">
       Bolas extraídas
     </button>
+
+     <button (click)="selectTab('players')" [ngClass]="{
+        'bg-white text-blue-600 shadow-md': selectedTab === 'players',
+        'text-gray-600 hover:text-blue-600': selectedTab !== 'players'
+      }"
+      class="flex-shrink-0 ml-2 px-5 py-2 rounded-full font-medium transition-colors duration-200 whitespace-nowrap">
+      Jugadores
+    </button>
   </nav>
 
   <!-- Contenido de pestañas con @if de Angular 20 -->
@@ -30,6 +38,10 @@
     <!-- Pestaña Orden de bolas extraídas -->
     @if (selectedTab === 'orden') {
     <app-tablero [orden]="true"></app-tablero>
+    }
+
+     @if (selectedTab === 'players') {
+    <app-players></app-players>
     }
   </div>
 </section>
