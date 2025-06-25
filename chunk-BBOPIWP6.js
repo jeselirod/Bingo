@@ -1,1 +1,0 @@
-import"./chunk-7CGTOI24.js";var t=[{path:"admin/:id",loadComponent:()=>import("./chunk-PCA4F5PE.js").then(o=>o.BingoComponent)},{path:"invitado/:id",loadComponent:()=>import("./chunk-PCA4F5PE.js").then(o=>o.BingoComponent)}];export{t as routesBingo};
