@@ -92,12 +92,11 @@ export class BingoService {
 
     const roomRef = doc(this.firestore, 'rooms', roomId);
     // Si ya existe, no la creamos de nuevo
- /*    if (await this.existRoom(roomRef)) {
-      console.log(`La sala ${roomId} ya existe.`);
+    if (await this.existRoom(roomRef)) {
       this.listenRoom();
       return;
     }
- */
+
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
       this.alertService.show('Debes estar autenticado para crear una sala', 'error', 4000);

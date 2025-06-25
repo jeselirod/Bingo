@@ -37,11 +37,10 @@ export const adminMatchGuard: CanMatchFn = (route: Route, segments: UrlSegment[]
       }
       // Si no coincide → redirigir a invitado
       alertService.show(
-        'Esta sala ya existe y tiene administrador. Accede como invitado.',
+        'Esta sala ya existe y tiene administrador. Unete a ella o crea una nueva.',
         'warning',
         4000
       );
-     /*  router.navigate([`/bingo/invitado/${roomId}`]); */
       return from([false]);
     }),
     catchError(err => {
