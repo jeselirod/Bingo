@@ -20,6 +20,7 @@ export interface BingoRoom {
   currentBall: number | null;
   isAnimating: boolean;
   players?: Record<string, string>;
+  creatorId?: string;
 }
 
 import {
@@ -32,7 +33,7 @@ import { User } from 'firebase/auth';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 
-const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
+export const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
   toFirestore(room: BingoRoom): DocumentData {
     // Aquí defines qué campos guardas
     return {
@@ -41,7 +42,8 @@ const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
       currentBall: room.currentBall,
       isAnimating: room.isAnimating,
       // Si no viene, lo omitimos
-      ...(room.players != null && { players: room.players })
+      ...(room.players != null && { players: room.players }),
+      ...(room.creatorId != null && { creatorId: room.creatorId })
     };
   },
   fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): BingoRoom {
@@ -52,6 +54,7 @@ const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
       currentBall: data['currentBall'] as number | null,
       isAnimating: data['isAnimating'] as boolean,
       players: (data['players'] as Record<string, string>) || {},
+      creatorId: data['creatorId'] as string | undefined,
     };
   }
 };
@@ -89,10 +92,17 @@ export class BingoService {
 
     const roomRef = doc(this.firestore, 'rooms', roomId);
     // Si ya existe, no la creamos de nuevo
-    if (await this.existRoom(roomRef)) {
+ /*    if (await this.existRoom(roomRef)) {
       console.log(`La sala ${roomId} ya existe.`);
-      this.listenRoom(); // Podemos escucharla igualmente
+      this.listenRoom();
       return;
+    }
+ */
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      this.alertService.show('Debes estar autenticado para crear una sala', 'error', 4000);
+      this.router.navigate(['/home']);
+      return
     }
 
     const initial: BingoRoom = {
@@ -100,8 +110,9 @@ export class BingoService {
       drawnNumbers: [],
       currentBall: null,
       isAnimating: false,
+      creatorId: currentUser.uid,
     };
-    await setDoc(doc(this.firestore, 'rooms', roomId), initial);
+    await setDoc(roomRef, initial);
     this.listenRoom();
   }
 
@@ -132,7 +143,7 @@ export class BingoService {
   }
 
   // Escucha real-time de Firestore
-  private listenRoom() {
+  listenRoom() {
     if (!this.roomId) return;
     if (this.roomSub) this.roomSub.unsubscribe();
 
@@ -240,5 +251,13 @@ export class BingoService {
     await updateDoc(roomRef, {
       [`players.${uid}`]: deleteField()
     });
+  }
+
+  async getRoom(roomId: string): Promise<any> {
+
+    const roomRef = doc(this.firestore, 'rooms', roomId).withConverter(bingoRoomConverter);
+    const snap = await getDoc(roomRef);
+
+    return snap.data();
   }
 }

@@ -31,7 +31,6 @@ export class Lobby {
     this.checkForm()
     const roomId = this.form.get('roomId')?.value.trim();
     if (!roomId) return;
-    this.bingoService.createRoom(roomId);
     this.router.navigate([`/bingo/admin/${roomId}`]); // Ajusta la ruta según tu estructura
   }
 

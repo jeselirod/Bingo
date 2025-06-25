@@ -11,7 +11,7 @@ export class AuthService {
   user$: Observable<User | null> = authState(this.auth);
   spinnerService = inject(SpinnerService)
   constructor() {
-  this.spinnerService.show()
+    this.spinnerService.show()
     this.user$.subscribe(user => {
       this.spinnerService.hide()
       if (user) {
@@ -92,4 +92,6 @@ export class AuthService {
   getCurrentUser(): User | null {
     return this.auth.currentUser;
   }
+
+
 }
