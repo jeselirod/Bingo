@@ -75,6 +75,7 @@ export class BingoService {
   currentBall = signal<number | null>(null);
   isAnimating = signal(false);
   players = signal<Record<string, string>>({});
+  creatorId = signal<string | undefined>(undefined);
 
   firestore = inject(Firestore)
   private db = inject(Database);
@@ -93,18 +94,20 @@ export class BingoService {
     this.roomId = roomId;
 
     const roomRef = doc(this.firestore, 'rooms', roomId);
-    // Si ya existe, no la creamos de nuevo
-    if (await this.existRoom(roomRef)) {
-      this.listenRoom();
-      this.listenPresenceChanges(roomId);
-      return;
-    }
 
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
       this.alertService.show('Debes estar autenticado para crear una sala', 'error', 4000);
       this.router.navigate(['/home']);
       return
+    }
+    // Si ya existe, no la creamos de nuevo
+    if (await this.existRoom(roomRef)) {
+      await updateDoc(roomRef, { [`players.${currentUser.uid}`]: currentUser.displayName || currentUser.email || 'Anónimo' });
+      this.listenRoom();
+      await this.setUserPresence(roomId, currentUser.uid);
+      this.listenPresenceChanges(roomId);
+      return;
     }
 
     const initial: BingoRoom = {
@@ -114,9 +117,13 @@ export class BingoService {
       isAnimating: false,
       creatorId: currentUser.uid,
     };
+
     await setDoc(roomRef, initial);
+    await updateDoc(roomRef, { [`players.${currentUser.uid}`]: currentUser.displayName || currentUser.email || 'Anónimo' });
     this.listenRoom();
+    await this.setUserPresence(roomId, currentUser.uid);
     this.listenPresenceChanges(roomId);
+
   }
 
   // Unirse a sala existente (admin o invitado)
@@ -163,6 +170,8 @@ export class BingoService {
         this.isAnimating.set(data.isAnimating);
         if (data.players) {
           this.players.set(data.players);
+          /** ← Actualizamos creatorId */
+          this.creatorId.set(data.creatorId);
         }
       }
 
@@ -266,20 +275,19 @@ export class BingoService {
     return snap.data();
   }
 
-    // 4️⃣ PRESENCIA en Realtime Database
+  // 4️⃣ PRESENCIA en Realtime Database
   private async setUserPresence(roomId: string, userId: string) {
-    console.log('setUserPresence', roomId, userId);
     const userRef = ref(this.db, `presence/${roomId}/${userId}`);
     await set(userRef, true);
     onDisconnect(userRef).remove();  // ← Se borra al desconectar
   }
 
-    private listenPresenceChanges(roomId: string) {
+  private listenPresenceChanges(roomId: string) {
     const presRef = ref(this.db, `presence/${roomId}`);
     onValue(presRef, async snap => {
       const present = snap.val() ? Object.keys(snap.val()) : [];
       const current = this.players();         // jugadores que Firestore tenía
-      const updated: Record<string,string> = {};
+      const updated: Record<string, string> = {};
       for (const uid of present) {
         updated[uid] = current[uid] || 'Anónimo';
       }
@@ -288,12 +296,12 @@ export class BingoService {
     });
   }
 
-   async clearUserPresence(roomId: string, userId: string) {
+  async clearUserPresence(roomId: string, userId: string) {
     const userRef = ref(this.db, `presence/${roomId}/${userId}`);
     await remove(userRef);
   }
 
-    unsubscribe() {
+  unsubscribe() {
     this.roomSub?.unsubscribe();
   }
 }

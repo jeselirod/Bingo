@@ -1,20 +1,30 @@
 <div class="m-4 p-4 bg-gray-50 rounded-2xl shadow-lg">
   <div class="flex items-center justify-between mb-4">
-   <!--  <h2 class="text-2xl font-semibold text-gray-800">Jugadores</h2> -->
+    <!--  <h2 class="text-2xl font-semibold text-gray-800">Jugadores</h2> -->
     <span class="text-sm text-gray-500">Total: {{ totalPlayers() }}</span>
   </div>
 
   <ul class="space-y-2">
-    @for (player of players()| keyvalue; track player.key) {
+    @for (player of playersList(); track player.uid) {
     <li class="flex items-center p-2 bg-white rounded-lg shadow-sm hover:bg-gray-100 transition">
+      <!-- Icono -->
       <div class="flex-shrink-0">
         <svg class="h-6 w-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
           stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M5.121 17.804A9.003 9.003 0 0112 15c2.21 0 4.243.896 5.879 2.344M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9.003 9.003 0 0112 15c2.21 0 4.243.896 5.879 2.344
+               M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
       </div>
-      <span class="ml-3 text-gray-700 font-medium">{{ player.value }}</span>
+
+      <!-- Nombre -->
+      <span class="ml-3 text-gray-700 font-medium">{{ player.name }}</span>
+
+      <!-- Badge alineado a la derecha -->
+      @if (player.isAdmin) {
+      <span class="ml-auto bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded">
+        Admin
+      </span>
+      }
     </li>
     }
   </ul>
