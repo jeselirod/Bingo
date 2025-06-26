@@ -32,6 +32,7 @@ import { AlertService } from '../shared/services/alert.service';
 import { User } from 'firebase/auth';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
+import { Database, ref, set, onDisconnect, onValue, remove } from '@angular/fire/database';
 
 export const bingoRoomConverter: FirestoreDataConverter<BingoRoom> = {
   toFirestore(room: BingoRoom): DocumentData {
@@ -76,6 +77,7 @@ export class BingoService {
   players = signal<Record<string, string>>({});
 
   firestore = inject(Firestore)
+  private db = inject(Database);
   alertService = inject(AlertService)
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -94,6 +96,7 @@ export class BingoService {
     // Si ya existe, no la creamos de nuevo
     if (await this.existRoom(roomRef)) {
       this.listenRoom();
+      this.listenPresenceChanges(roomId);
       return;
     }
 
@@ -113,6 +116,7 @@ export class BingoService {
     };
     await setDoc(roomRef, initial);
     this.listenRoom();
+    this.listenPresenceChanges(roomId);
   }
 
   // Unirse a sala existente (admin o invitado)
@@ -120,10 +124,10 @@ export class BingoService {
     this.roomId = roomId;
 
     // Referencia al documento con converter
-    const roomDocRef = doc(this.firestore, 'rooms', this.roomId)
+    const roomRef = doc(this.firestore, 'rooms', roomId).withConverter(bingoRoomConverter);
 
     // Comprobamos existencia
-    if (!await this.existRoom(roomDocRef)) {
+    if (!(await getDoc(roomRef)).exists()) {
       this.router.navigate(['/lobby'])
       this.alertService.show(`La sala con id ${this.roomId} no existe`, 'error', 4000);
       return false;
@@ -131,13 +135,15 @@ export class BingoService {
 
     this.listenRoom();
 
-    // … después de this.listenRoom();
-    // inyectamos y registramos al usuario en la sala
-    const currentUser = this.authService.getCurrentUser();
-    if (currentUser) {
-      await this.addPlayerToRoom(currentUser);
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      // Añade a Firestore
+      await updateDoc(roomRef, { [`players.${user.uid}`]: user.displayName || user.email || 'Anónimo' });
+      // Marca presencia en Realtime DB
+      await this.setUserPresence(roomId, user.uid);
+      // Escucha cambios de presencia
+      this.listenPresenceChanges(roomId);
     }
-
     return true
   }
 
@@ -258,5 +264,36 @@ export class BingoService {
     const snap = await getDoc(roomRef);
 
     return snap.data();
+  }
+
+    // 4️⃣ PRESENCIA en Realtime Database
+  private async setUserPresence(roomId: string, userId: string) {
+    console.log('setUserPresence', roomId, userId);
+    const userRef = ref(this.db, `presence/${roomId}/${userId}`);
+    await set(userRef, true);
+    onDisconnect(userRef).remove();  // ← Se borra al desconectar
+  }
+
+    private listenPresenceChanges(roomId: string) {
+    const presRef = ref(this.db, `presence/${roomId}`);
+    onValue(presRef, async snap => {
+      const present = snap.val() ? Object.keys(snap.val()) : [];
+      const current = this.players();         // jugadores que Firestore tenía
+      const updated: Record<string,string> = {};
+      for (const uid of present) {
+        updated[uid] = current[uid] || 'Anónimo';
+      }
+      // Sincroniza Firestore con sólo los presentes
+      await updateDoc(doc(this.firestore, 'rooms', roomId), { players: updated });
+    });
+  }
+
+   async clearUserPresence(roomId: string, userId: string) {
+    const userRef = ref(this.db, `presence/${roomId}/${userId}`);
+    await remove(userRef);
+  }
+
+    unsubscribe() {
+    this.roomSub?.unsubscribe();
   }
 }
