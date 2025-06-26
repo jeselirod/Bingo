@@ -23,4 +23,8 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/bingo/bingo.routes').then(m => m.routesBingo),
     canMatch: [authGuard]
   },
+  {
+    path:'**',
+    redirectTo: 'home'
+  }
 ];
