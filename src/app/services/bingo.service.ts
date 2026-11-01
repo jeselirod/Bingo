@@ -1,5 +1,5 @@
 // bingo.service.ts
-import { effect, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
   Firestore,
   doc,
@@ -65,7 +65,7 @@ export class BingoService {
   readonly numbersBingo = 90
   readonly animationDuration = 1000; // Duración total de la animación en ms
   readonly intervalStep = 50;
-  private animationIntervalId: any = null;
+  private animationIntervalId: ReturnType<typeof setInterval> | null = null;
   private roomId: string | null = null;
   private roomSub: Subscription | null = null;
 
@@ -83,14 +83,9 @@ export class BingoService {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  constructor() {
-    effect(() => {
-      if (this.isAnimating()) this.animationBalls()
-    });
-  }
-
   // Crear sala nueva (admin)
   async createRoom(roomId: string) {
+    if (this.roomId !== roomId) this.stopAnimation();
     this.roomId = roomId;
 
     const roomRef = doc(this.firestore, 'rooms', roomId);
@@ -128,6 +123,7 @@ export class BingoService {
 
   // Unirse a sala existente (admin o invitado)
   async joinRoom(roomId: string): Promise<boolean> {
+    if (this.roomId !== roomId) this.stopAnimation();
     this.roomId = roomId;
 
     // Referencia al documento con converter
@@ -157,6 +153,7 @@ export class BingoService {
   // Escucha real-time de Firestore
   listenRoom() {
     if (!this.roomId) return;
+    this.stopAnimation();
     if (this.roomSub) this.roomSub.unsubscribe();
 
     const roomDoc = doc(this.firestore, 'rooms', this.roomId)
@@ -164,19 +161,25 @@ export class BingoService {
 
     this.roomSub = docData<BingoRoom>(roomDoc).subscribe(data => {
       if (data) {
-        this.remainingBalls.set(data.remainingBalls);
-        this.drawnNumbers.set(data.drawnNumbers);
-        this.currentBall.set(data.currentBall);
-        this.isAnimating.set(data.isAnimating);
-        if (data.players) {
-          this.players.set(data.players);
-          /** ← Actualizamos creatorId */
-          this.creatorId.set(data.creatorId);
-        }
+        this.applyRoomState(data);
       }
-
-
     });
+  }
+
+  private applyRoomState(data: BingoRoom): void {
+    if (!data.isAnimating) this.stopAnimation();
+
+    this.remainingBalls.set(data.remainingBalls);
+    this.drawnNumbers.set(data.drawnNumbers);
+    this.currentBall.set(data.currentBall);
+    this.isAnimating.set(data.isAnimating);
+
+    if (data.players) {
+      this.players.set(data.players);
+      this.creatorId.set(data.creatorId);
+    }
+
+    if (data.isAnimating) this.animationBalls();
   }
 
   // Lógica de sacar bola (solo admin)
@@ -223,16 +226,28 @@ export class BingoService {
   }
 
   private animationBalls() {
+    if (this.animationIntervalId !== null) return;
+
     const startTime = Date.now();
     this.animationIntervalId = setInterval(() => {
       const elapsed = Date.now() - startTime;
-      if (elapsed >= this.animationDuration) {
-        clearInterval(this.animationIntervalId);
-      } else {
-        const randomIdx = Math.floor(Math.random() * this.remainingBalls().length);
-        this.currentBall.set(this.remainingBalls()[randomIdx]);
+      const remaining = this.remainingBalls();
+
+      if (!this.isAnimating() || elapsed >= this.animationDuration || remaining.length === 0) {
+        this.stopAnimation();
+        return;
       }
+
+      const randomIdx = Math.floor(Math.random() * remaining.length);
+      this.currentBall.set(remaining[randomIdx]);
     }, this.intervalStep);
+  }
+
+  private stopAnimation(): void {
+    if (this.animationIntervalId === null) return;
+
+    clearInterval(this.animationIntervalId);
+    this.animationIntervalId = null;
   }
 
   async existRoom(roomRef: DocumentReference<DocumentData, DocumentData>) {
@@ -303,5 +318,6 @@ export class BingoService {
 
   unsubscribe() {
     this.roomSub?.unsubscribe();
+    this.stopAnimation();
   }
 }
