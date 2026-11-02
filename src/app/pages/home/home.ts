@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../shared/services/alert.service';
 import { AsyncPipe } from '@angular/common';
 import { LoginComponent } from '../../shared/components/login/login';
+import { HomeSettingsService } from '../../services/home-settings.service';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +15,12 @@ import { LoginComponent } from '../../shared/components/login/login';
 export class Home {
   authService: AuthService = inject(AuthService);
   alertService: AlertService = inject(AlertService);
+  homeSettingsService: HomeSettingsService = inject(HomeSettingsService);
+  isHomeAdminMenuOpen = signal(false);
+
+  toggleHomeAdminMenu(): void {
+    this.isHomeAdminMenuOpen.update(isOpen => !isOpen);
+  }
 
   async logout(): Promise<void> {
     try {

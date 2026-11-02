@@ -1,0 +1,68 @@
+<main class="min-h-screen bg-gradient-to-br from-purple-600 to-pink-500 px-4 py-10 text-white">
+  <section class="mx-auto w-full max-w-2xl space-y-8 rounded-2xl bg-white/10 p-6 shadow-lg backdrop-blur-md sm:p-10">
+    <header class="flex items-center justify-between gap-4">
+      <h1 class="text-3xl font-bold">Configuración de la página de inicio</h1>
+      <a routerLink="/home" class="shrink-0 rounded-full bg-white px-4 py-2 font-semibold text-purple-700 hover:bg-gray-100">
+        Volver
+      </a>
+    </header>
+
+    <form [formGroup]="homeForm" (ngSubmit)="saveHomeContent()" class="space-y-5">
+      <label class="block space-y-2 font-semibold">
+        <span>Título</span>
+        <input formControlName="title" type="text" class="w-full rounded-lg bg-white px-4 py-3 text-gray-900 outline-none focus:ring-2 focus:ring-purple-300">
+      </label>
+
+      <label class="block space-y-2 font-semibold">
+        <span>Texto de bienvenida</span>
+        <textarea formControlName="welcomeText" rows="3" class="w-full rounded-lg bg-white px-4 py-3 text-gray-900 outline-none focus:ring-2 focus:ring-purple-300"></textarea>
+      </label>
+
+      <label class="block space-y-2 font-semibold">
+        <span>Texto del botón</span>
+        <input formControlName="buttonText" type="text" class="w-full rounded-lg bg-white px-4 py-3 text-gray-900 outline-none focus:ring-2 focus:ring-purple-300">
+      </label>
+
+      <button type="submit" [disabled]="isSaving() || homeForm.invalid"
+        class="w-full rounded-full bg-white px-6 py-3 font-bold text-purple-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60">
+        {{ isSaving() ? 'Guardando…' : 'Guardar textos' }}
+      </button>
+    </form>
+
+    @if (isOwner$ | async) {
+      <section class="space-y-5 border-t border-white/30 pt-6">
+        <div>
+          <h2 class="text-2xl font-bold">Personas autorizadas</h2>
+          <p class="mt-1 text-sm text-white/90">Solo tú puedes conceder o retirar estos permisos.</p>
+        </div>
+
+        <form [formGroup]="adminForm" (ngSubmit)="addAdmin()" class="flex flex-col gap-3 sm:flex-row">
+          <input formControlName="email" type="email" autocomplete="email" placeholder="amigo@ejemplo.com"
+            class="min-w-0 flex-1 rounded-lg bg-white px-4 py-3 text-gray-900 outline-none focus:ring-2 focus:ring-purple-300">
+          <button type="submit" [disabled]="isAddingAdmin() || adminForm.invalid"
+            class="rounded-full bg-purple-900 px-6 py-3 font-semibold hover:bg-purple-950 disabled:cursor-not-allowed disabled:opacity-60">
+            {{ isAddingAdmin() ? 'Añadiendo…' : 'Añadir email' }}
+          </button>
+        </form>
+
+        @if (adminEmails$ | async; as adminEmails) {
+          @if (adminEmails.length > 0) {
+            <ul class="space-y-2">
+              @for (email of adminEmails; track email) {
+                <li class="flex items-center justify-between gap-3 rounded-lg bg-white/10 px-4 py-3">
+                  <span class="break-all">{{ email }}</span>
+                  <button type="button" (click)="removeAdmin(email)" [disabled]="removingEmail() === email"
+                    class="shrink-0 rounded-full bg-red-600 px-4 py-2 text-sm font-semibold hover:bg-red-700 disabled:opacity-60">
+                    {{ removingEmail() === email ? 'Retirando…' : 'Retirar' }}
+                  </button>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="text-sm text-white/90">Todavía no has añadido a nadie.</p>
+          }
+        }
+      </section>
+    }
+  </section>
+</main>
