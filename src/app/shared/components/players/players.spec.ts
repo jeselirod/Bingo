@@ -1,4 +1,7 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AuthService } from '../../../services/auth.service';
+import { BingoService } from '../../../services/bingo.service';
 
 import { Players } from './players';
 
@@ -8,7 +11,18 @@ describe('Players', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Players]
+      imports: [Players],
+      providers: [
+        provideZonelessChangeDetection(),
+        { provide: AuthService, useValue: {} },
+        {
+          provide: BingoService,
+          useValue: {
+            players: () => ({}),
+            creatorId: () => undefined
+          }
+        }
+      ]
     })
     .compileComponents();
 
