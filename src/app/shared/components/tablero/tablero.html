@@ -11,8 +11,8 @@
 
     @for (num of orden() ? drawnNumbers() : allNumbers; track $index) {
     <div [ngClass]="{
-          'bg-green-500 text-white': drawnNumbers().includes(num),
-           'bg-red-600 text-white animate-pulse': drawnNumbers().includes(num) && drawnNumbers()[drawnNumbers().length - 1] === num  ,
+          'bg-green-500 text-gray-900': drawnNumbers().includes(num) && drawnNumbers()[drawnNumbers().length - 1] !== num,
+          'bg-red-600 text-white animate-pulse': drawnNumbers().includes(num) && drawnNumbers()[drawnNumbers().length - 1] === num,
           'bg-gray-200 text-gray-700': !drawnNumbers().includes(num)
         }" class="flex items-center justify-center rounded-full transition
                w-7 h-7 text-xs
